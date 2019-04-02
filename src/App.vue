@@ -4,27 +4,33 @@
     <small>( Click on any note's text to edit it )</small>
     <!-- Form for Adding new notes -->
     <form class="add_new_note_form" @submit.prevent="addNewNote">
-      <input type="text" v-model="newNoteText">
-      <button class="add_new_note_btn">Add Note</button>
+      <input placeholder="Type new note" type="text" v-model="newNoteText">
+      <button class="add_new_note_btn">Add</button>
     </form>
 
     <div class="note_container_div" v-for="note in allNotes" :key="note.id">
       <!-- shown normally for each Note -->
-      <div class="note" v-if="noteToEdit.id!==note.id">
-        <span @click="editNote(note.id)">{{note.text}}</span>
-        <i class="material-icons delete" @click="deleteNote(note.id)">done</i>
-      </div>
+      <RegularNote
+        v-if="noteToEdit.id!==note.id"
+        @initiateEditNote="editNote"
+        :note="note"
+        @initiateDeleteNote="deleteNote"
+      />
       <!-- only shown when that Note goes into edit mode -->
-      <div class="editing_note" v-if="showEditMode && noteToEdit.id===note.id">
-        <input type="text" v-model="noteToEdit.text">
-        <i @click="saveNote(note.id)" class="material-icons save">save</i>
-        <i @click="cancelNoteEditing" class="material-icons cancel">clear</i>
-      </div>
+      <EditingNote
+        v-if="showEditMode && noteToEdit.id===note.id"
+        :note="note"
+        :noteToEditText.sync="noteToEdit.text"
+        @initiateSave="saveNote"
+        @initiateCancel="cancelNoteEditing"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import RegularNote from "./components/regular-note.vue";
+import EditingNote from "./components/editing-note.vue";
 export default {
   name: "app",
   data() {
@@ -42,6 +48,7 @@ export default {
       let editableNote = this.notesArr.find(e => e.id === noteId);
       this.noteToEdit = { text: editableNote.text, id: editableNote.id };
       this.showEditMode = true;
+      console.log("ran edit mode");
     },
     saveNote(noteId) {
       let updatedObj = { ...this.noteToEdit, status: false };
@@ -54,13 +61,15 @@ export default {
       this.noteToEdit = {};
     },
     addNewNote() {
-      let newNoteObj = {
-        id: Date.now(),
-        text: this.newNoteText,
-        status: false
-      };
-      this.notesArr.push(newNoteObj);
-      this.newNoteText = "";
+      if (this.newNoteText) {
+        let newNoteObj = {
+          id: Date.now(),
+          text: this.newNoteText,
+          status: false
+        };
+        this.notesArr.push(newNoteObj);
+        this.newNoteText = "";
+      }
     },
     deleteNote(noteId) {
       this.notesArr = this.notesArr.filter(e => e.id !== noteId);
@@ -72,7 +81,8 @@ export default {
     }
   },
   components: {
-    // HelloWorld
+    RegularNote,
+    EditingNote
   }
 };
 </script>
@@ -123,6 +133,9 @@ input:focus {
   text-transform: uppercase;
   font-weight: bold;
   cursor: pointer;
+}
+.add_new_note_btn:focus {
+  outline: none;
 }
 
 .note_container_div {
