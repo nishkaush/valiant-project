@@ -1,6 +1,6 @@
 <template>
   <div class="editing_note">
-    <input type="text" v-model="noteToEditText">
+    <input type="text" v-model="noteEdited">
     <i @click="initiateSave(note.id)" class="material-icons save">save</i>
     <i @click="initiateCancel" class="material-icons cancel">clear</i>
   </div>
@@ -24,9 +24,12 @@ export default {
     }
   },
   watch: {
-    noteToEditText(val) {
-      this.$emit("update:noteToEditText",val);
+    noteEdited(val) {
+      this.$emit("update:noteToEditText", val);
     }
+  },
+  created() {
+    this.noteEdited = this.noteToEditText;
   }
 };
 </script>

@@ -11,6 +11,7 @@
     <div class="note_container_div" v-for="note in allNotes" :key="note.id">
       <!-- shown normally for each Note -->
       <RegularNote
+        class="regular_note"
         v-if="noteToEdit.id!==note.id"
         @initiateEditNote="editNote"
         :note="note"
@@ -18,6 +19,7 @@
       />
       <!-- only shown when that Note goes into edit mode -->
       <EditingNote
+        class="editing_note"
         v-if="showEditMode && noteToEdit.id===note.id"
         :note="note"
         :noteToEditText.sync="noteToEdit.text"
@@ -48,7 +50,7 @@ export default {
       let editableNote = this.notesArr.find(e => e.id === noteId);
       this.noteToEdit = { text: editableNote.text, id: editableNote.id };
       this.showEditMode = true;
-      console.log("ran edit mode");
+      // console.log("ran edit mode);
     },
     saveNote(noteId) {
       let updatedObj = { ...this.noteToEdit, status: false };
