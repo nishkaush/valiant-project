@@ -1,6 +1,6 @@
 <template>
   <div class="note">
-    <span @click="initiateEditNote(note.id)">{{note.text}}</span>
+    <span class="noteText" @click="initiateEditNote(note.id)">{{note.text}}</span>
     <i class="material-icons delete" @click="initiateDeleteNote(note.id)">done</i>
   </div>
 </template>

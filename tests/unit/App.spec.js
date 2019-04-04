@@ -67,4 +67,5 @@ describe("App.vue", () => {
     expect(wrapper.find(".note_container_div").exists()).to.be.false;
     expect(wrapper.vm.notesArr.length).to.equal(0);
   });
+  // wrapper.destroy();
 });
